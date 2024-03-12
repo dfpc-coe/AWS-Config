@@ -1,0 +1,31 @@
+{
+    "name": "@tak-ps/aws-config",
+    "type": "module",
+    "version": "1.0.0",
+    "description": "Create and manage AWS Config rules",
+    "scripts": {
+        "lint": "eslint cloudformation/*.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "engines": {
+        "node": ">= 18"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dfpc-coe/AWS-Config.git"
+    },
+    "author": "Nick Ingalls <nick@ingalls.ca>",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/dfpc-coe/AWS-Config/issues"
+    },
+    "homepage": "https://github.com/dfpc-coe/AWS-Config#readme",
+    "dependencies": {
+        "@openaddresses/cloudfriend": "^7.0.0",
+        "@openaddresses/deploy": "^8.0.0"
+    },
+    "devDependencies": {
+        "eslint": "^8.9.0",
+        "eslint-plugin-node": "^11.1.0"
+    }
+}

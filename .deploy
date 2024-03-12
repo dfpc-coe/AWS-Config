@@ -1,0 +1,13 @@
+{
+    "name": "coe-config",
+    "profile": "coegc",
+    "region": "us-gov-east-1",
+    "tags": [
+        {
+            "Key": "Project",
+            "Value": "aws-config"
+        },
+        "Owner",
+        "Client"
+    ]
+}
