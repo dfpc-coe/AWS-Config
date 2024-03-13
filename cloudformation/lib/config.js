@@ -63,6 +63,15 @@ const resources = {
                 RetentionInDays: 7
             }
         },
+        EventFunctionInvoke: {
+            Type: 'AWS::Lambda::Permission',
+            Properties: {
+                FunctionName: cf.getAtt('EventFunction', 'Arn'),
+                Action: 'lambda:InvokeFunction',
+                Principal: 'events.amazonaws.com',
+                SourceArn: cf.getAtt('EventRule', 'Arn')
+            }
+        },
         EventFunction: {
             Type: 'AWS::Lambda::Function',
             DependsOn: ['EventFunctionLogs'],
