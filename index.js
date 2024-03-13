@@ -17,17 +17,19 @@ async function handler() {
                 ComplianceTypes: ['NON_COMPLIANT']
             }));
 
-            await sns.send(new SNS.PublishBatchCommand({
-                TopicArn: process.env.TopicArn,
-                PublishBatchRequestEntries: res.EvaluationResults.map((e) => {
-                    const f = e.EvaluationResultIdentifier.EvaluationResultQualifier;
-                    return {
-                        Id: f.ResourceId.replace(':', '-'),
-                        Subject: `ALARM: \"${f.ConfigRuleName}:${f.ResourceId}\"`,
-                        Message: `A Resource (${f.ResourceType}) with ARN ${f.ResourceId} is violating the ${f.ConfigRuleName} rule`
-                    };
-                })
-            }));
+            if (res.EvaluationResults.length) {
+                await sns.send(new SNS.PublishBatchCommand({
+                    TopicArn: process.env.TopicArn,
+                    PublishBatchRequestEntries: res.EvaluationResults.map((e) => {
+                        const f = e.EvaluationResultIdentifier.EvaluationResultQualifier;
+                        return {
+                            Id: f.ResourceId.replace(':', '-'),
+                            Subject: `ALARM: \"${f.ConfigRuleName}:${f.ResourceId}\"`,
+                            Message: `A Resource (${f.ResourceType}) with ARN ${f.ResourceId} is violating the ${f.ConfigRuleName} rule`
+                        };
+                    })
+                }));
+            }
         } while (res.NextToken)
 
         return true;
