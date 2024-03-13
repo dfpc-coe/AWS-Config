@@ -79,14 +79,12 @@ const resources = {
                 FunctionName: cf.stackName,
                 Description: 'Check AWS Config Rules and check for violations',
                 MemorySize: 128,
-                Runtime: 'nodejs20.x',
+                Runtime: 'nodejs18.x',
                 Role: cf.getAtt('EventFunctionRole', 'Arn'),
                 Handler: 'index.handler',
                 Timeout: 30,
                 Environment: {
                     Variables: {
-                        AWS_REGION: cf.region,
-                        AWS_ACCOUNT_ID: cf.accountId,
                         TopicArn: cf.ref('EventNotify')
                     }
                 },

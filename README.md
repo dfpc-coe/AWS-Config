@@ -7,6 +7,9 @@
 An AWS Config Configuration Recorder must first be setup in the account.
 Navigate to the AWS Config setup of the console and enable AWS Config.
 
+If you are sending the SNS notifications to PagerDuty, add a new email subscription
+in the subscriptions section of the topic and ensure the settings are set to deduplicate!
+
 ## Installation
 
 Local installation can be performed via the following
