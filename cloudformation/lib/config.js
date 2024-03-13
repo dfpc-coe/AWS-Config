@@ -85,6 +85,7 @@ const resources = {
                 Timeout: 30,
                 Environment: {
                     Variables: {
+                        AWS_ACCOUNT_ID: cf.accountId,
                         TopicArn: cf.ref('EventNotify')
                     }
                 },

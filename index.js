@@ -24,7 +24,7 @@ async function handler() {
                         const f = e.EvaluationResultIdentifier.EvaluationResultQualifier;
                         return {
                             Id: f.ResourceId.replace(':', '-'),
-                            Subject: `ALARM: \"${f.ConfigRuleName}:${f.ResourceId}\"`,
+                            Subject: `ALARM: \"${f.ConfigRuleName}:${f.ResourceId}\" - Account: ${process.env.AWS_ACCOUNT_ID}`,
                             Message: `A Resource (${f.ResourceType}) with ARN ${f.ResourceId} is violating the ${f.ConfigRuleName} rule`
                         };
                     })
