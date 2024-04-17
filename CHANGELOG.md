@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v1.1.0
+
+- :tada: Enable Cloudformation Drift Detection Rules
+
 ### v1.0.1
 
 - :rocket: Add `private: true`
