@@ -1,4 +1,5 @@
 import cf from '@openaddresses/cloudfriend';
+import Rules from './lib/rules.js';
 import Config from './lib/config.js';
 
 export default cf.merge({
@@ -9,4 +10,4 @@ export default cf.merge({
             Type: 'String'
         }
     }
-}, Config);
+}, Config, Rules);
