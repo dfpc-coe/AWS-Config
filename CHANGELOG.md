@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v1.4.0
+
+- :rocket: Prefix Policy & Role with region to avoid errors when deploying to multiple regions
+
 ### v1.3.0
 
 - :rocket: More resilient Error handling in lambda function

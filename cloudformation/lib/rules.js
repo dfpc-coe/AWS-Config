@@ -23,7 +23,7 @@ const resources = {
         CloudformationDriftRole: {
             Type: "AWS::IAM::Role",
             Properties: {
-                RoleName: cf.join([cf.stackName, '-cloudformation-drift']),
+                RoleName: cf.join([cf.stackName, '-', cf.region, '-cloudformation-drift']),
                 Description: "IAM role for AWS Config to access CloudFormation drift detection",
                 AssumeRolePolicyDocument: {
                     Version: "2012-10-17",
@@ -36,7 +36,7 @@ const resources = {
                     }]
                 },
                 Policies: [{
-                    PolicyName: cf.join([cf.stackName, '-cloudformation-drift']),
+                    PolicyName: cf.join([cf.stackName, '-', cf.region, '-cloudformation-drift']),
                     PolicyDocument: {
                         Version: "2012-10-17",
                         Statement: [{
