@@ -8,6 +8,8 @@ async function handler() {
 
     const rules = await config.send(new Config.DescribeConfigRulesCommand({}));
 
+    let errs = [];
+
     for (const rule of rules.ConfigRules) {
         let res = {}
         do {
@@ -18,22 +20,29 @@ async function handler() {
             }));
 
             if (res.EvaluationResults.length) {
-                await sns.send(new SNS.PublishBatchCommand({
-                    TopicArn: process.env.TopicArn,
-                    PublishBatchRequestEntries: res.EvaluationResults.map((e) => {
-                        const f = e.EvaluationResultIdentifier.EvaluationResultQualifier;
-                        return {
-                            Id: f.ResourceId.replace(':', '-'),
-                            Subject: `ALARM: \"${f.ConfigRuleName}:${f.ResourceId}\" - Account: ${process.env.AWS_ACCOUNT_ID}`,
-                            Message: `A Resource (${f.ResourceType}) with ARN ${f.ResourceId} is violating the ${f.ConfigRuleName} rule`
-                        };
-                    })
-                }));
+                try {
+                    await sns.send(new SNS.PublishBatchCommand({
+                        TopicArn: process.env.TopicArn,
+                        PublishBatchRequestEntries: res.EvaluationResults.map((e) => {
+                            const f = e.EvaluationResultIdentifier.EvaluationResultQualifier;
+                            return {
+                                Id: f.ResourceId.replace(':', '-'),
+                                Subject: `ALARM: \"${f.ConfigRuleName}:${f.ResourceId}\" - Account: ${process.env.AWS_ACCOUNT_ID}`,
+                                Message: `A Resource (${f.ResourceType}) with ARN ${f.ResourceId} is violating the ${f.ConfigRuleName} rule`
+                            };
+                        })
+                    }));
+                } catch (err) {
+                    console.error(err);
+                    errs.push(err)
+                }
             }
         } while (res.NextToken)
 
         return true;
     }
+
+    if (errs.length) throw new Error('One or more errors took place');
 }
 
 module.exports = {

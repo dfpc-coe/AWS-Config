@@ -42,9 +42,9 @@ const resources = {
                         Statement: [{
                             Effect: "Allow",
                             Action: [
-                                "cloudformation:DetectStackResourceDrift",
-                                "cloudformation:DetectStackDrift",
-                                "cloudformation:DescribeStackDriftDetectionStatus"
+                                'cloudformation:DetectStackResourceDrift',
+                                'cloudformation:DetectStackDrift',
+                                'cloudformation:DescribeStackDriftDetectionStatus'
                             ],
                             Resource: cf.join(['arn:', cf.partition, ':cloudformation:', cf.region, ':', cf.accountId, ':*'])
                         }]
