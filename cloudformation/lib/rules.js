@@ -10,7 +10,7 @@ const resources = {
                 InputParameters: {
                     cloudformationRoleArn: cf.getAtt('CloudformationDriftRole', 'Arn')
                 },
-                MaximumExecutionFrequency: 'Six_Hours',
+                MaximumExecutionFrequency: 'One_Hour',
                 Scope: {
                     ComplianceResourceTypes: [ 'AWS::CloudFormation::Stack' ],
                 },

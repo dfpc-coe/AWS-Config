@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v1.2.0
+
+- :rocket: Update detection to hourly
+
 ### v1.1.0
 
 - :tada: Enable Cloudformation Drift Detection Rules
