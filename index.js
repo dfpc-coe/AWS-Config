@@ -2,6 +2,8 @@ const Config = require('@aws-sdk/client-config-service');
 const SNS = require('@aws-sdk/client-sns');
 const { randomUUID } = require('node:crypto');
 
+const EnabledRules = ['Required-Tags'];
+
 async function handler() {
     const config = new Config.ConfigServiceClient({ region: process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION });
     const sns = new SNS.SNSClient({ region: process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION });
@@ -11,6 +13,11 @@ async function handler() {
     let errs = [];
 
     for (const rule of rules.ConfigRules) {
+        if (!EnabledRuled.includes(rule.ConfigRuleName)) {
+            console.log(`ok - skipping ${rule.ConfigRule}`);
+            continue;
+        }
+
         let res = {}
         do {
             res = await config.send(new Config.GetComplianceDetailsByConfigRuleCommand({
@@ -26,7 +33,7 @@ async function handler() {
                         PublishBatchRequestEntries: res.EvaluationResults.map((e) => {
                             const f = e.EvaluationResultIdentifier.EvaluationResultQualifier;
                             return {
-                                Id: f.ResourceId.split(':').pop(),
+                                Id: f.ResourceId.split(':').pop().replace(/[^a-zA-Z0-9]/g, '-').
                                 Subject: `ALARM: \"${f.ConfigRuleName}:${f.ResourceId}\" - Account: ${process.env.AWS_ACCOUNT_ID}`,
                                 Message: `A Resource (${f.ResourceType}) with ARN ${f.ResourceId} is violating the ${f.ConfigRuleName} rule`
                             };
