@@ -10,6 +10,11 @@
 
 ## Version History
 
+### v1.6.0
+
+- :rocket: Add enabled rules as CloudFormation Drift isn't ready for prime time
+- :bug: Fix submission ID to be compliant
+
 ### v1.5.0
 
 - :rocket: Include AWSBasicExecution role to get CloudWatch Logs
