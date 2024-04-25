@@ -13,7 +13,7 @@ async function handler() {
     let errs = [];
 
     for (const rule of rules.ConfigRules) {
-        if (!EnabledRuled.includes(rule.ConfigRuleName)) {
+        if (!EnabledRules.includes(rule.ConfigRuleName)) {
             console.log(`ok - skipping ${rule.ConfigRule}`);
             continue;
         }
@@ -33,7 +33,7 @@ async function handler() {
                         PublishBatchRequestEntries: res.EvaluationResults.map((e) => {
                             const f = e.EvaluationResultIdentifier.EvaluationResultQualifier;
                             return {
-                                Id: f.ResourceId.split(':').pop().replace(/[^a-zA-Z0-9]/g, '-').
+                                Id: f.ResourceId.split(':').pop().replace(/[^a-zA-Z0-9]/g, '-'),
                                 Subject: `ALARM: \"${f.ConfigRuleName}:${f.ResourceId}\" - Account: ${process.env.AWS_ACCOUNT_ID}`,
                                 Message: `A Resource (${f.ResourceType}) with ARN ${f.ResourceId} is violating the ${f.ConfigRuleName} rule`
                             };
