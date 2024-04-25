@@ -10,6 +10,11 @@
 
 ## Version History
 
+### v1.5.0
+
+- :rocket: Include AWSBasicExecution role to get CloudWatch Logs
+- :arrow_up: Update Core Deps
+
 ### v1.4.0
 
 - :rocket: Prefix Policy & Role with region to avoid errors when deploying to multiple regions

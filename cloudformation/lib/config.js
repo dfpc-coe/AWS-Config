@@ -53,7 +53,10 @@ const resources = {
                             Action: ['sns:Publish']
                         }]
                     }
-                }]
+                }],
+                ManagedPolicyArns: [
+                    cf.join(['arn:', cf.partition, ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'])
+                ]
             }
         },
         EventFunctionLogs: {
