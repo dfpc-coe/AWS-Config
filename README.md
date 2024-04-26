@@ -18,6 +18,12 @@ Local installation can be performed via the following
 npm install
 ```
 
+## Running Locally
+
+```sh
+AWS_REGION=us-gov-east-1 node -e 'require("./index.cjs").handler()'
+```
+
 ## AWS Deployment
 
 From the root directory, install the deploy dependencies

@@ -93,7 +93,7 @@ const resources = {
                     }
                 },
                 Code: {
-                    ZipFile: String(fs.readFileSync(new URL('../../index.js', import.meta.url)))
+                    ZipFile: String(fs.readFileSync(new URL('../../index.cjs', import.meta.url)))
                 }
             }
         }
