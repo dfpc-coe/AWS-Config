@@ -21,18 +21,18 @@ const resources = {
             }
         },
         CloudformationDriftRole: {
-            Type: "AWS::IAM::Role",
+            Type: 'AWS::IAM::Role',
             Properties: {
                 RoleName: cf.join([cf.stackName, '-', cf.region, '-cloudformation-drift']),
                 Description: "IAM role for AWS Config to access CloudFormation drift detection",
                 AssumeRolePolicyDocument: {
-                    Version: "2012-10-17",
+                    Version: '2012-10-17',
                     Statement: [{
-                        Effect: "Allow",
+                        Effect: 'Allow',
                         Principal: {
-                            Service: "config.amazonaws.com"
+                            Service: 'config.amazonaws.com'
                         },
-                        Action: ["sts:AssumeRole"]
+                        Action: ['sts:AssumeRole']
                     }]
                 },
                 Policies: [{
@@ -49,7 +49,8 @@ const resources = {
                             Resource: cf.join(['arn:', cf.partition, ':cloudformation:', cf.region, ':', cf.accountId, ':*'])
                         }]
                     },
-                }]
+                }],
+                ManagedPolicyArns: [cf.join(['arn:', cf.partition, ':iam::aws:policy/ReadOnlyAccess'])]
             }
         },
         RequiredTags: {
