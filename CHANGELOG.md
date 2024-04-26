@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v1.8.0
+
+- :rocket: Enabled `Cloudformation-Drift` Urgent Alarms
+
 ### v1.7.0
 
 - :rocket: Add `ReadOnlyAccess` ManagedPolicyArn to CloudFormation Drift Policy

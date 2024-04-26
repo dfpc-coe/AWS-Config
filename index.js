@@ -2,7 +2,10 @@ const Config = require('@aws-sdk/client-config-service');
 const SNS = require('@aws-sdk/client-sns');
 const { randomUUID } = require('node:crypto');
 
-const EnabledRules = ['Required-Tags'];
+const Enabled_Urgent_Rules = [
+    'Required-Tags',
+    'Cloudformation-Drift'
+];
 
 async function handler() {
     const config = new Config.ConfigServiceClient({ region: process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION });
@@ -13,7 +16,7 @@ async function handler() {
     let errs = [];
 
     for (const rule of rules.ConfigRules) {
-        if (!EnabledRules.includes(rule.ConfigRuleName)) {
+        if (!Enabled_Urgent_Rules.includes(rule.ConfigRuleName)) {
             console.log(`ok - skipping ${rule.ConfigRule}`);
             continue;
         }
