@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v1.9.1
+
+- :bug: Fix premature exit of Rule iteration
+
 ### v1.9.0
 
 - :rocket: Enable `Certificate-Expiration` Rule & Urgent Alarms
