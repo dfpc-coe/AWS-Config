@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v1.7.0
+
+- :rocket: Add `ReadOnlyAccess` ManagedPolicyArn to CloudFormation Drift Policy
+
 ### v1.6.0
 
 - :rocket: Add enabled rules as CloudFormation Drift isn't ready for prime time
