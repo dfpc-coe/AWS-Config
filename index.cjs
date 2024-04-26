@@ -19,6 +19,8 @@ async function handler() {
         if (!Enabled_Urgent_Rules.includes(rule.ConfigRuleName)) {
             console.log(`ok - skipping ${rule.ConfigRule}`);
             continue;
+        } else {
+            console.log(`ok - checking ${rule.ConfigRule}`);
         }
 
         let res = {};
