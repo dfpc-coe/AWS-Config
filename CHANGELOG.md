@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v1.9.0
+
+- :rocket: Enable `Certificate-Expiration` Rule & Urgent Alarms
+
 ### v1.8.0
 
 - :rocket: Enabled `Cloudformation-Drift` Urgent Alarms

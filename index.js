@@ -4,7 +4,8 @@ const { randomUUID } = require('node:crypto');
 
 const Enabled_Urgent_Rules = [
     'Required-Tags',
-    'Cloudformation-Drift'
+    'Cloudformation-Drift',
+    'Certificate-Expiration'
 ];
 
 async function handler() {

@@ -2,6 +2,24 @@ import cf from '@openaddresses/cloudfriend';
 
 const resources = {
     Resources: {
+        CertificateExpiration: {
+            Type: "AWS::Config::ConfigRule",
+            Properties: {
+                ConfigRuleName: 'Certificate-Expiration',
+                Description: "Ensure's ACM Certificates are not about to expire",
+                InputParameters: {
+                    daysToExpiration: 15
+                },
+                MaximumExecutionFrequency: 'TwentyFour_Hours',
+                Scope: {
+                    ComplianceResourceTypes: [ 'AWS::CertificateManager::Certificate' ],
+                },
+                Source: {
+                    SourceIdentifier: 'ACM_CERTIFICATE_EXPIRATION_CHECK',
+                    Owner: 'AWS'
+                }
+            }
+        },
         CloudformationDrift: {
             Type: "AWS::Config::ConfigRule",
             Properties: {
