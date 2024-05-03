@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v1.9.2
+
+- :bug: Fix logging
+
 ### v1.9.1
 
 - :bug: Fix premature exit of Rule iteration

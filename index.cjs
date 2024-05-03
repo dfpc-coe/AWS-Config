@@ -17,10 +17,10 @@ async function handler() {
 
     for (const rule of rules.ConfigRules) {
         if (!Enabled_Urgent_Rules.includes(rule.ConfigRuleName)) {
-            console.log(`ok - skipping ${rule.ConfigRule}`);
+            console.log(`ok - skipping ${rule.ConfigRuleName}`);
             continue;
         } else {
-            console.log(`ok - checking ${rule.ConfigRule}`);
+            console.log(`ok - checking ${rule.ConfigRuleName}`);
         }
 
         let res = {};
@@ -31,6 +31,7 @@ async function handler() {
                 ComplianceTypes: ['NON_COMPLIANT']
             }));
 
+            console.log(`ok - ${rule.ConfigRuleName}: ${res.EvaluationResults.length} violations`);
             if (res.EvaluationResults.length) {
                 try {
                     await sns.send(new SNS.PublishBatchCommand({
