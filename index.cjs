@@ -43,6 +43,13 @@ async function handler() {
                                 Subject: `ALARM: \"${f.ConfigRuleName}:${f.ResourceId}\" - Account: ${process.env.AWS_ACCOUNT_ID}`,
                                 Message: `A Resource (${f.ResourceType}) with ARN ${f.ResourceId} is violating the ${f.ConfigRuleName} rule`
                             };
+                        }).filter((e) => {
+                            if (rule.ConfigRuleName === 'Required-Tags') {
+                                // TODO: Remove once Cloudformation created LoadBalancers propagate tags from ALB => ENI
+                                return !e.Subject.includes('Required-Tags:eni-')
+                            }
+
+                            return true;
                         })
                     }));
                 } catch (err) {
