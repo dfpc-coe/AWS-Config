@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v1.11.0
+
+- :rocket: Avoid publishing empty batch messages
+
 ### v1.10.0
 
 - :rocket: Ignore ENI resources in the Required Tags rule as AWS currently doesn't propagate ALB tags to ENIs, resulting in significant alarm fatigue

@@ -34,24 +34,28 @@ async function handler() {
             console.log(`ok - ${rule.ConfigRuleName}: ${res.EvaluationResults.length} violations`);
             if (res.EvaluationResults.length) {
                 try {
-                    await sns.send(new SNS.PublishBatchCommand({
-                        TopicArn: process.env.TopicArn,
-                        PublishBatchRequestEntries: res.EvaluationResults.map((e) => {
-                            const f = e.EvaluationResultIdentifier.EvaluationResultQualifier;
-                            return {
-                                Id: f.ResourceId.split(':').pop().replace(/[^a-zA-Z0-9]/g, '-'),
-                                Subject: `ALARM: \"${f.ConfigRuleName}:${f.ResourceId}\" - Account: ${process.env.AWS_ACCOUNT_ID}`,
-                                Message: `A Resource (${f.ResourceType}) with ARN ${f.ResourceId} is violating the ${f.ConfigRuleName} rule`
-                            };
-                        }).filter((e) => {
-                            if (rule.ConfigRuleName === 'Required-Tags') {
-                                // TODO: Remove once Cloudformation created LoadBalancers propagate tags from ALB => ENI
-                                return !e.Subject.includes('Required-Tags:eni-')
-                            }
+                    const PublishBatchRequestEntries = res.EvaluationResults.map((e) => {
+                        const f = e.EvaluationResultIdentifier.EvaluationResultQualifier;
+                        return {
+                            Id: f.ResourceId.split(':').pop().replace(/[^a-zA-Z0-9]/g, '-'),
+                            Subject: `ALARM: \"${f.ConfigRuleName}:${f.ResourceId}\" - Account: ${process.env.AWS_ACCOUNT_ID}`,
+                            Message: `A Resource (${f.ResourceType}) with ARN ${f.ResourceId} is violating the ${f.ConfigRuleName} rule`
+                        };
+                    }).filter((e) => {
+                        if (rule.ConfigRuleName === 'Required-Tags') {
+                            // TODO: Remove once Cloudformation created LoadBalancers propagate tags from ALB => ENI
+                            return !e.Subject.includes('Required-Tags:eni-')
+                        }
 
-                            return true;
-                        })
-                    }));
+                        return true;
+                    });
+
+                    if (PublishBatchRequestEntries.length) {
+                        await sns.send(new SNS.PublishBatchCommand({
+                            TopicArn: process.env.TopicArn,
+                            PublishBatchRequestEntries
+                        }));
+                    }
                 } catch (err) {
                     console.error(err);
                     errs.push(err);
