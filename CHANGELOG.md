@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v1.12.0
+
+- :rocket: Fix error in Cloudformatio-Drift subject call
+
 ### v1.11.0
 
 - :rocket: Avoid publishing empty batch messages

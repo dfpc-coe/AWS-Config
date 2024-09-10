@@ -36,9 +36,15 @@ async function handler() {
                 try {
                     const PublishBatchRequestEntries = res.EvaluationResults.map((e) => {
                         const f = e.EvaluationResultIdentifier.EvaluationResultQualifier;
+
+                        let ResourceId = f.ResourceId;
+                        if (ResourceId.startsWith('arn')) {
+                            ResourceId = ResourceId.replace(/.*:/, '').replace(/\//g, ':')
+                        }
+
                         return {
                             Id: f.ResourceId.split(':').pop().replace(/[^a-zA-Z0-9]/g, '-'),
-                            Subject: `ALARM: \"${f.ConfigRuleName}:${f.ResourceId}\" - Account: ${process.env.AWS_ACCOUNT_ID}`,
+                            Subject: `ALARM: \"${process.env.AWS_ACCOUNT_ID}:${f.ConfigRuleName}:${ResourceId}\"`.slice(0, 100),
                             Message: `A Resource (${f.ResourceType}) with ARN ${f.ResourceId} is violating the ${f.ConfigRuleName} rule`
                         };
                     }).filter((e) => {
@@ -51,10 +57,16 @@ async function handler() {
                     });
 
                     if (PublishBatchRequestEntries.length) {
-                        await sns.send(new SNS.PublishBatchCommand({
+                        console.log(`ok - ${rule.ConfigRuleName}: publishing ${PublishBatchRequestEntries.length} filtered violations to SNS`);
+
+                        const res = await sns.send(new SNS.PublishBatchCommand({
                             TopicArn: process.env.TopicArn,
                             PublishBatchRequestEntries
                         }));
+
+                        for (const err of (res.Failed || [])) {
+                            errs.push(new Error(err.Message))
+                        }
                     }
                 } catch (err) {
                     console.error(err);
@@ -64,7 +76,10 @@ async function handler() {
         } while (res.NextToken);
     }
 
-    if (errs.length) throw new Error('One or more errors took place');
+    if (errs.length) {
+        console.error(JSON.stringify(errs.map((e) => { return e.message })));
+        throw new Error('One or more errors took place');
+    }
 }
 
 module.exports = {
