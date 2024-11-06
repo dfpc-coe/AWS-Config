@@ -2,6 +2,21 @@ import cf from '@openaddresses/cloudfriend';
 
 const resources = {
     Resources: {
+        OpenSsh: {
+            Type: "AWS::Config::ConfigRule",
+            Properties: {
+                ConfigRuleName: 'Restricted-SSH',
+                Description: "Ensure's SSH Ports are not fully open",
+                EvaluationModes: [{ Mode: 'DETECTIVE' }],
+                Scope: {
+                    ComplianceResourceTypes: [ 'AWS::EC2::SecurityGroup' ],
+                },
+                Source: {
+                    SourceIdentifier: 'INCOMING_SSH_DISABLED',
+                    Owner: 'AWS'
+                }
+            }
+        },
         CertificateExpiration: {
             Type: "AWS::Config::ConfigRule",
             Properties: {

@@ -3,6 +3,7 @@ const SNS = require('@aws-sdk/client-sns');
 
 const Enabled_Urgent_Rules = [
     'Required-Tags',
+    'Restricted-SSH',
     'Cloudformation-Drift',
     'Certificate-Expiration'
 ];
