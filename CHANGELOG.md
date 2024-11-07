@@ -10,9 +10,13 @@
 
 ## Version History
 
+### v1.13.0
+
+- :tada: Add and enforce ECS Execute Enabled = true check
+
 ### v1.12.0
 
-- :rocket: Fix error in Cloudformatio-Drift subject call
+- :rocket: Fix error in Cloudformation-Drift subject call
 
 ### v1.11.0
 

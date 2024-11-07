@@ -2,6 +2,40 @@ import cf from '@openaddresses/cloudfriend';
 
 const resources = {
     Resources: {
+        ECSRestrictedExecute: {
+            Type: "AWS::Config::ConfigRule",
+            Properties: {
+                ConfigRuleName: 'ECS-Service-Execute-Disabled',
+                Scope: {
+                    ComplianceResourceTypes: [ "AWS::ECS::Service" ]
+                },
+                Source: {
+                    "Owner": "CUSTOM_POLICY",
+                    SourceDetails: [{
+                        EventSource: "aws.config",
+                        MessageType: "ConfigurationItemChangeNotification"
+                    },{
+                        EventSource: "aws.config",
+                        MessageType: "OversizedConfigurationItemChangeNotification"
+                    }],
+                    CustomPolicyDetails: {
+                        PolicyRuntime: "guard-2.x.x",
+                        PolicyText: `
+                            rule ecs_service_execute_disabled
+                                when
+                                    resourceType == "AWS::ECS::Service"
+                            {
+                                configuration.EnableExecuteCommand == false
+                            }
+                        `,
+                        EnableDebugLogDelivery: false
+                    }
+                },
+                EvaluationModes: [{
+                    Mode: "DETECTIVE"
+                }]
+            }
+        },
         OpenSsh: {
             Type: "AWS::Config::ConfigRule",
             Properties: {

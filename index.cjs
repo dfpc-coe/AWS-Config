@@ -5,6 +5,7 @@ const Enabled_Urgent_Rules = [
     'Required-Tags',
     'Restricted-SSH',
     'Cloudformation-Drift',
+    'ECS-Service-Execute-Disabled',
     'Certificate-Expiration'
 ];
 
