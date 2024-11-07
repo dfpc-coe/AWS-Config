@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v1.13.1
+
+- :arrow_up: Update Core Deps
+
 ### v1.13.0
 
 - :tada: Add and enforce ECS Execute Enabled = true check
