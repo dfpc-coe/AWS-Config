@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v1.14.0
+
+- :rocket: Update to Node@22 due to retirement of Node@18 runtime
+
 ### v1.13.1
 
 - :arrow_up: Update Core Deps
