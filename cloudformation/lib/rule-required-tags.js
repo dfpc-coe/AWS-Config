@@ -21,40 +21,55 @@ export default {
             }
         },
         RequiredTagsRemediation: {
-            Type: "AWS::Config::RemediationConfiguration",
+            Type: "AWS::Events::Rule",
             Properties: {
-                ConfigRuleName: 'Required-Tags',
-                TargetType: 'SSM_DOCUMENT',
-                TargetId: 'AWS-ExecuteLambdaFunction',
-                TargetVersion: '1',
-                Parameters: {
-                    ResourceId: {
-                        ResourceValue: {
-                            Value: 'RESOURCE_ID'
+                Description: "Invoke Lambda to AddTags to NON_COMPLIANT resources from CONFIG rule",
+                EventPattern: {
+                    source: [ "aws.config" ],
+                    "detail-type": [ "AWS API Call via CloudTrail" ],
+                    detail: {
+                        eventSource: [ "config.amazonaws.com" ],
+                        eventName: [ "PutEvaluations" ],
+                        requestParameters: {
+                            evaluations: {
+                                complianceType: [ "NON_COMPLIANT" ]
+                            }
+                        },
+                        additionalEventData: {
+                            managedRuleIdentifier: [ "REQUIRED_TAGS" ]
                         }
                     }
                 },
-                Automatic: true,
-                MaximumAutomaticAttempts: 1,
-                RetryAttemptSeconds: 60,
-                ResourceType: 'AWS::EC2::Volume'
+                State: "ENABLED",
+                Targets: [{
+                    Arn: cf.getAtt("RequiredTagsRemediationFunction", "Arn"),
+                    Id: 'LambdaInvoke'
+                }]
             }
         },
         RequiredTagsRemediateFunctionInvokePermission: {
             Type: 'AWS::Lambda::Permission',
             Properties: {
-                FunctionName: cf.ref('RequiredTagsRemediationFunction'),
+                FunctionName: cf.getAtt('RequiredTagsRemediationFunction', 'Arn'),
                 Action: 'lambda:InvokeFunction',
-                Principal: 'config.amazonaws.com',
-                SourceAccount: cf.accountId,
+                Principal: 'events.amazonaws.com',
+                SourceArn: cf.getAtt('RequiredTagsRemediation', 'Arn')
             }
         },
         RequiredTagsRemediationFunction: {
             Type: "AWS::Lambda::Function",
             Properties: {
-                Handler: "lambda_function.handler",
+                FunctionName: cf.join([cf.stackName, '-Remediate-Required-Tags']),
+                Description: 'Fix Required Tags where possible',
+                Environment: {
+                    Variables: {
+                        AWS_ACCOUNT_ID: cf.accountId,
+                    }
+                },
+                Handler: 'index.handler',
                 Role: cf.getAtt("RequiredTagsRemediationRole", "Arn"),
                 Runtime: "nodejs22.x",
+                MemorySize: 128,
                 Timeout: 180,
                 Code: {
                     ZipFile: String(fs.readFileSync(new URL('../../remediations/required-tags-vol.cjs', import.meta.url)))
