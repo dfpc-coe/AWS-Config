@@ -97,6 +97,8 @@ export default {
                         Statement: [{
                             Effect: "Allow",
                             Action: [
+                                "ec2:DescribeNetworkInterfaces",
+                                "ec2:DescribeVpcs",
                                 "ec2:DescribeVolumes",
                                 "ec2:DescribeInstances",
                                 "ec2:CreateTags"
