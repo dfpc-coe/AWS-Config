@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v1.15.0
+
+- :rocket: Automatically remediate ENI & Volume tags
+
 ### v1.14.0
 
 - :rocket: Update to Node@22 due to retirement of Node@18 runtime
