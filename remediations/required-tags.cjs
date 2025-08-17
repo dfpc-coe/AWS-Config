@@ -22,6 +22,8 @@ exports.handler = async (event) => {
 async function requiredTagVolume(volumeId) {
     const { EC2Client, DescribeInstancesCommand, CreateTagsCommand, DescribeVolumesCommand } = require('@aws-sdk/client-ec2');
 
+    const ec2Client = new EC2Client({ region: process.env.AWS_REGION });
+
     const volumeData = await ec2Client.send(new DescribeVolumesCommand({
         VolumeIds: [volumeId]
     }));
