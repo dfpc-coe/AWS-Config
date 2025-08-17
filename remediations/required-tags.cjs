@@ -10,14 +10,73 @@ exports.handler = async (event) => {
     for (const eval of event.detail.requestParameters.evaluations) {
         if (eval.complianceType !== 'NON_COMPLIANT') continue;
 
-        if (eval.complianceResourceType === 'AWS::EC2::Volume') {
-            requiredTagVolume(eval.complianceResourceId);
-        } else  {
-            console.log(`Unsupported resource type: ${eval.complianceResourceType} -- ${eval.complianceResourceId}`);
+        const errs = [];
+
+        try {
+            if (eval.complianceResourceType === 'AWS::EC2::Volume') {
+                await requiredTagVolume(eval.complianceResourceId);
+            } else if (eval.complianceResourceType === 'AWS::EC2::NetworkInterface') {
+                await requiredTagENI(eval.complianceResourceId);
+            } else  {
+                console.log(`Unsupported resource type: ${eval.complianceResourceType} -- ${eval.complianceResourceId}`);
+            }
+        } catch (err) {
+            console.error(err);
+            errs.push(err);
         }
     }
 
+    if (errs.length > 0) {
+        throw new Error(`Errors occurred while processing: ${errs.map(e => e.message).join(', ')}`);
+    }
 };
+
+async function requiredTagENI(eniId) {
+    const { EC2Client, DescribeNetworkInterfacesCommand, DescribeVpcsCommand, CreateTagsCommand } = require('@aws-sdk/client-ec2');
+
+    const ec2Client = new EC2Client({ region: process.env.AWS_REGION });
+
+    const niResponse = await ec2Client.send(new DescribeNetworkInterfacesCommand({
+            NetworkInterfaceIds: [eniId]
+    }));
+
+    if (!niResponse.NetworkInterfaces || niResponse.NetworkInterfaces.length === 0) {
+        throw new Error(`Network interface ${eniId} not found`);
+    }
+
+    const networkInterface = niResponse.NetworkInterfaces[0];
+    const vpcId = networkInterface.VpcId;
+
+    const vpcResponse = await ec2Client.send(new DescribeVpcsCommand({
+        VpcIds: [vpcId]
+    }))
+
+    if (!vpcResponse.Vpcs || vpcResponse.Vpcs.length === 0) {
+        throw new Error(`VPC ${vpcId} not found`);
+    }
+
+    const vpc = vpcResponse.Vpcs[0];
+    const vpcTags = vpc.Tags || [];
+
+    console.log(`VPC ${vpcId} has ${vpcTags.length} tags`);
+
+    // Filter tags to apply (exclude AWS system tags)
+    const tagsToApply = vpcTags.filter(tag =>
+        tag.Key &&
+        !tag.Key.startsWith('Name') &&
+        !tag.Key.startsWith('aws:') &&
+        tag.Value !== undefined
+    );
+
+    if (tagsToApply.length > 0) {
+        await ec2Client.send(new CreateTagsCommand({
+            Resources: [eniId],
+            Tags: tagsToApply
+        }));
+
+        console.log(`Applied ${tagsToApply.length} tags to volume ${eniId}`);
+    }
+}
 
 async function requiredTagVolume(volumeId) {
     const { EC2Client, DescribeInstancesCommand, CreateTagsCommand, DescribeVolumesCommand } = require('@aws-sdk/client-ec2');
@@ -48,6 +107,7 @@ async function requiredTagVolume(volumeId) {
     // Filter tags to apply (exclude AWS system tags)
     const tagsToApply = instanceTags.filter(tag =>
         tag.Key &&
+        !tag.Key.startsWith('Name') &&
         !tag.Key.startsWith('aws:') &&
         tag.Value !== undefined
     );
