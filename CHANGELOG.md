@@ -10,6 +10,10 @@
 
 ## Version History
 
+### v1.16.0
+
+- :rocket: Use single SNS topic for all rules
+
 ### v1.15.0
 
 - :rocket: Automatically remediate ENI & Volume tags

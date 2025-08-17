@@ -10,13 +10,6 @@ const resources = {
                 DisplayName: cf.stackName
             }
         },
-        HighUrgencyAlarmTopic: {
-            Type: 'AWS::SNS::Topic',
-            Properties: {
-                DisplayName: cf.join([cf.stackName, '-high-urgency']),
-                TopicName: cf.join([cf.stackName, '-high-urgency'])
-            }
-        },
         EventRule: {
             Type: 'AWS::Events::Rule',
             Properties: {
@@ -87,7 +80,7 @@ const resources = {
             Properties: {
                 AlarmName: cf.join([cf.stackName, '-errors']),
                 ActionsEnabled: true,
-                AlarmActions: [ cf.ref('HighUrgencyAlarmTopic') ],
+                AlarmActions: [ cf.ref('EventNotify') ],
                 MetricName: 'Errors',
                 Namespace: 'AWS/Lambda',
                 Statistic: 'Maximum',
@@ -107,7 +100,7 @@ const resources = {
             Properties: {
                 AlarmName: cf.join([cf.stackName, '-no-invocations']),
                 ActionsEnabled: true,
-                AlarmActions: [ cf.ref('HighUrgencyAlarmTopic') ],
+                AlarmActions: [ cf.ref('EventNotify') ],
                 MetricName: 'Invocations',
                 Namespace: 'AWS/Lambda',
                 Statistic: 'Maximum',
