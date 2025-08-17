@@ -89,7 +89,7 @@ export default {
                         Action: "sts:AssumeRole"
                     }]
                 },
-                ManagedPolicyArns: [ "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole" ],
+                ManagedPolicyArns: [ cf.join(["arn:", cf.partition, ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"]) ],
                 Policies: [{
                     PolicyName: cf.join([cf.stackName, "-Required-Tags-Remediation"]),
                     PolicyDocument: {
