@@ -7,10 +7,10 @@ exports.handler = async (event) => {
         throw new Error('Invalid Event Detail');
     }
 
+    const errs = [];
+
     for (const eval of event.detail.requestParameters.evaluations) {
         if (eval.complianceType !== 'NON_COMPLIANT') continue;
-
-        const errs = [];
 
         try {
             if (eval.complianceResourceType === 'AWS::EC2::Volume') {
