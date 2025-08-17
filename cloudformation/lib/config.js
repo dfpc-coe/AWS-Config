@@ -10,6 +10,13 @@ const resources = {
                 DisplayName: cf.stackName
             }
         },
+        HighUrgencyAlarmTopic: {
+            Type: 'AWS::SNS::Topic',
+            Properties: {
+                DisplayName: cf.join([cf.stackName, '-high-urgency']),
+                TopicName: cf.join([cf.stackName, '-high-urgency'])
+            }
+        },
         EventRule: {
             Type: 'AWS::Events::Rule',
             Properties: {
@@ -73,6 +80,46 @@ const resources = {
                 Action: 'lambda:InvokeFunction',
                 Principal: 'events.amazonaws.com',
                 SourceArn: cf.getAtt('EventRule', 'Arn')
+            }
+        },
+        EventFunctionNoInvocationsAlarm: {
+            Type: 'AWS::CloudWatch::Alarm',
+            Properties: {
+                AlarmName: cf.join([cf.stackName, '-errors']),
+                ActionsEnabled: true,
+                AlarmActions: [ cf.ref('HighUrgencyAlarmTopic') ],
+                MetricName: 'Errors',
+                Namespace: 'AWS/Lambda',
+                Statistic: 'Maximum',
+                Dimensions: [{
+                    Name: 'FunctionName',
+                    Value: cf.stackName
+                }],
+                Period: 60,
+                EvaluationPeriods: 3,
+                Threshold: 0,
+                ComparisonOperator: 'LessThanOrEqualToThreshold',
+                TreatMissingData: 'missing'
+            }
+        },
+        EventFunctionNoInvocationsAlarm: {
+            Type: 'AWS::CloudWatch::Alarm',
+            Properties: {
+                AlarmName: cf.join([cf.stackName, '-no-invocations']),
+                ActionsEnabled: true,
+                AlarmActions: [ cf.ref('HighUrgencyAlarmTopic') ],
+                MetricName: 'Invocations',
+                Namespace: 'AWS/Lambda',
+                Statistic: 'Maximum',
+                Dimensions: [{
+                    Name: 'FunctionName',
+                    Value: cf.stackName
+                }],
+                Period: 60,
+                EvaluationPeriods: 3,
+                Threshold: 0,
+                ComparisonOperator: 'LessThanOrEqualToThreshold',
+                TreatMissingData: 'missing'
             }
         },
         EventFunction: {
