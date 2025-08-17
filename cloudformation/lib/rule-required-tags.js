@@ -72,7 +72,7 @@ export default {
                 MemorySize: 128,
                 Timeout: 180,
                 Code: {
-                    ZipFile: String(fs.readFileSync(new URL('../../remediations/required-tags-vol.cjs', import.meta.url)))
+                    ZipFile: String(fs.readFileSync(new URL('../../remediations/required-tags.cjs', import.meta.url)))
                 }
             }
         },
