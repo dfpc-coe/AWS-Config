@@ -38,7 +38,7 @@ async function requiredTagVolume(volumeId) {
     const instanceId = volume.Attachments[0].InstanceId;
     console.log(`Volume attached to instance: ${instanceId}`);
 
-    const instanceData = await ec2Client.send(new DescribeInstanceCommand({
+    const instanceData = await ec2Client.send(new DescribeInstancesCommand({
         InstanceIds: [instanceId]
     }));
 
