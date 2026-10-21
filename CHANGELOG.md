@@ -10,6 +10,11 @@
 
 ## Version History
 
+### v1.17.0
+
+- :arrow_up: Update Core Deps
+- :arrow_up: Update Node@22 runtime to 24
+
 ### v1.16.0
 
 - :rocket: Use single SNS topic for all rules

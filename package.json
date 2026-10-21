@@ -25,10 +25,10 @@
         "@aws-sdk/client-config-service": "^3.529.1",
         "@aws-sdk/client-sns": "^3.529.1",
         "@openaddresses/cloudfriend": "^7.0.0",
-        "@openaddresses/deploy": "^9.0.0"
+        "@openaddresses/deploy": "^10.0.0"
     },
     "devDependencies": {
-        "eslint": "^9.0.0",
-        "eslint-plugin-n": "^17.2.1"
+        "eslint": "^10.0.0",
+        "eslint-plugin-n": "^18.5.0"
     }
 }

@@ -122,7 +122,7 @@ const resources = {
                 FunctionName: cf.stackName,
                 Description: 'Check AWS Config Rules and check for violations',
                 MemorySize: 128,
-                Runtime: 'nodejs22.x',
+                Runtime: 'nodejs24.x',
                 Role: cf.getAtt('EventFunctionRole', 'Arn'),
                 Handler: 'index.handler',
                 Timeout: 30,

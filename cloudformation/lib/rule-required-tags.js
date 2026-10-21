@@ -68,7 +68,7 @@ export default {
                 },
                 Handler: 'index.handler',
                 Role: cf.getAtt("RequiredTagsRemediationRole", "Arn"),
-                Runtime: "nodejs22.x",
+                Runtime: "nodejs24.x",
                 MemorySize: 128,
                 Timeout: 180,
                 Code: {
