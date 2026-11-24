@@ -1,6 +1,7 @@
 import cf from '@openaddresses/cloudfriend';
+import type { Template } from '@openaddresses/cloudfriend';
 
-const resources = {
+const resources: Template = {
     Resources: {
         ECSRestrictedExecute: {
             Type: "AWS::Config::ConfigRule",

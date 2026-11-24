@@ -1,24 +1,25 @@
-name: NPM Release
+name: Release
 
 on:
   push:
     tags:
       - '*'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Get tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
+      - uses: actions/checkout@v7
 
       - name: Generate CHANGELOG
-        run: ./release ${{steps.tag.outputs.tag}} > RELEASE
+        env:
+          TAG: ${{ github.ref_name }}
+        run: ./release "$TAG" > RELEASE
 
       - name: Github Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           body_path: RELEASE

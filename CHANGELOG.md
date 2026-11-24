@@ -10,6 +10,17 @@
 
 ## Version History
 
+### v1.18.0 - 2026-11-24
+
+- :rocket: Migrate Lambda functions & CloudFormation templates to TypeScript 7, compiled to `dist/` via `npm run build`
+- :rocket: Replace ESLint with type-aware OXLint
+- :bug: Restore the Lambda `-errors` alarm which was overwritten by a duplicate resource key & alarm when errors are present
+- :bug: Fix `-no-invocations` alarm never firing by treating missing data as breaching
+- :bug: Paginate Config Rule listing so urgent rules beyond the first page are checked
+- :rocket: Scope Required Tags remediation `ec2:CreateTags` permission to Volumes & Network Interfaces
+- :white_check_mark: Add template tests and a Test GitHub Action
+- :arrow_up: Update GitHub Action versions
+
 ### v1.17.0
 
 - :arrow_up: Update Core Deps

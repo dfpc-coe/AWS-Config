@@ -20,8 +20,17 @@ npm install
 
 ## Running Locally
 
+The Lambda functions and CloudFormation template are written in TypeScript and compiled to `dist/`
+
 ```sh
-AWS_REGION=us-gov-east-1 node -e 'require("./index.cjs").handler()'
+npm run build
+AWS_REGION=us-gov-east-1 node -e 'require("./dist/index.cjs").handler()'
+```
+
+Linting, building & tests can be run via
+
+```sh
+npm test
 ```
 
 ## AWS Deployment
@@ -50,6 +59,12 @@ Deploy uses your existing AWS credentials. Ensure that your `~/.aws/credentials`
 [coe]
 aws_access_key_id = <redacted>
 aws_secret_access_key = <redacted>
+```
+
+The template inlines the compiled Lambda functions, so rebuild after any code change and before deploying:
+
+```sh
+npm run build
 ```
 
 Deployment can then be performed via the following:

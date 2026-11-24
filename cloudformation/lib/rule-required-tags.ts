@@ -1,7 +1,8 @@
 import cf from '@openaddresses/cloudfriend';
-import fs from 'node:fs'
+import type { Template } from '@openaddresses/cloudfriend';
+import inlineLambda from './lambda.js';
 
-export default {
+const resources: Template = {
     Resources: {
         RequiredTags: {
             Type: "AWS::Config::ConfigRule",
@@ -72,7 +73,7 @@ export default {
                 MemorySize: 128,
                 Timeout: 180,
                 Code: {
-                    ZipFile: String(fs.readFileSync(new URL('../../remediations/required-tags.cjs', import.meta.url)))
+                    ZipFile: inlineLambda('remediations/required-tags')
                 }
             }
         },
@@ -100,14 +101,22 @@ export default {
                                 "ec2:DescribeNetworkInterfaces",
                                 "ec2:DescribeVpcs",
                                 "ec2:DescribeVolumes",
-                                "ec2:DescribeInstances",
-                                "ec2:CreateTags"
+                                "ec2:DescribeInstances"
                             ],
-                            "Resource": "*"
+                            Resource: "*"
+                        },{
+                            Effect: "Allow",
+                            Action: ["ec2:CreateTags"],
+                            Resource: [
+                                cf.join(["arn:", cf.partition, ":ec2:", cf.region, ":", cf.accountId, ":volume/*"]),
+                                cf.join(["arn:", cf.partition, ":ec2:", cf.region, ":", cf.accountId, ":network-interface/*"])
+                            ]
                         }]
                     }
                 }]
             }
         },
     }
-}
+};
+
+export default resources;

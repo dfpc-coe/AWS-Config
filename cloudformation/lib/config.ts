@@ -1,7 +1,8 @@
 import cf from '@openaddresses/cloudfriend';
-import fs from 'node:fs';
+import type { Template } from '@openaddresses/cloudfriend';
+import inlineLambda from './lambda.js';
 
-const resources = {
+const resources: Template = {
     Resources: {
         EventNotify: {
             Type: 'AWS::SNS::Topic',
@@ -75,24 +76,24 @@ const resources = {
                 SourceArn: cf.getAtt('EventRule', 'Arn')
             }
         },
-        EventFunctionNoInvocationsAlarm: {
+        EventFunctionErrorsAlarm: {
             Type: 'AWS::CloudWatch::Alarm',
             Properties: {
                 AlarmName: cf.join([cf.stackName, '-errors']),
                 ActionsEnabled: true,
-                AlarmActions: [ cf.ref('EventNotify') ],
+                AlarmActions: [cf.ref('EventNotify')],
                 MetricName: 'Errors',
                 Namespace: 'AWS/Lambda',
-                Statistic: 'Maximum',
+                Statistic: 'Sum',
                 Dimensions: [{
                     Name: 'FunctionName',
                     Value: cf.stackName
                 }],
-                Period: 60,
-                EvaluationPeriods: 3,
+                Period: 300,
+                EvaluationPeriods: 1,
                 Threshold: 0,
-                ComparisonOperator: 'LessThanOrEqualToThreshold',
-                TreatMissingData: 'missing'
+                ComparisonOperator: 'GreaterThanThreshold',
+                TreatMissingData: 'notBreaching'
             }
         },
         EventFunctionNoInvocationsAlarm: {
@@ -100,19 +101,19 @@ const resources = {
             Properties: {
                 AlarmName: cf.join([cf.stackName, '-no-invocations']),
                 ActionsEnabled: true,
-                AlarmActions: [ cf.ref('EventNotify') ],
+                AlarmActions: [cf.ref('EventNotify')],
                 MetricName: 'Invocations',
                 Namespace: 'AWS/Lambda',
-                Statistic: 'Maximum',
+                Statistic: 'Sum',
                 Dimensions: [{
                     Name: 'FunctionName',
                     Value: cf.stackName
                 }],
-                Period: 60,
+                Period: 300,
                 EvaluationPeriods: 3,
                 Threshold: 0,
                 ComparisonOperator: 'LessThanOrEqualToThreshold',
-                TreatMissingData: 'missing'
+                TreatMissingData: 'breaching'
             }
         },
         EventFunction: {
@@ -133,7 +134,7 @@ const resources = {
                     }
                 },
                 Code: {
-                    ZipFile: String(fs.readFileSync(new URL('../../index.cjs', import.meta.url)))
+                    ZipFile: inlineLambda('index')
                 }
             }
         }
